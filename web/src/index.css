@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 4% 30%;
+    --muted-foreground-soft: 240 4% 46%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 71% 38%;
+    --success-foreground: 0 0% 100%;
+    --warning: 32 95% 44%;
+    --warning-foreground: 0 0% 100%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.65rem;
+
+    /* brand = 当前强调色，供 chip / 进度 / 高亮使用 */
+    --brand: 240 5.9% 10%;
+    --brand-soft: 240 4.8% 95.9%;
+    --brand-ink: 240 5.9% 10%;
+    --shadow-color: 240 10% 3.9%;
+    --grid-line: 240 5.9% 92%;
+
+    /* 背景壁纸蒙版：浅色主题下更实一点，保证白卡片与壁纸有清晰边界 */
+    --wp-veil-1: 0.66;
+    --wp-veil-2: 0.78;
+    --wp-veil-3: 0.86;
+
+    /* 功能面板底色不透明度：由壁纸设置里的滑块写入，100% 即原样 */
+    --panel-opacity: 1;
+    /* 文字密集的区域（日志 / 空态 / 表格）：跟随滑块，但保底更实一些 */
+    --panel-opacity-soft: calc(var(--panel-opacity) + (1 - var(--panel-opacity)) * 0.55);
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 96%;
+    --card: 240 8% 6.5%;
+    --card-foreground: 0 0% 96%;
+    --popover: 240 8% 8%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 4.5% 13%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 240 4.5% 13%;
+    --muted-foreground: 240 5% 78%;
+    --muted-foreground-soft: 240 5% 60%;
+    --accent: 240 4.5% 14%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 70% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 64% 46%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 20 15% 9%;
+    --border: 240 4.5% 16%;
+    --input: 240 4.5% 18%;
+    --ring: 240 5% 78%;
+
+    --brand: 0 0% 96%;
+    --brand-soft: 240 4.5% 15%;
+    --brand-ink: 0 0% 94%;
+    --shadow-color: 0 0% 0%;
+    --grid-line: 240 4.5% 14%;
+
+    --wp-veil-1: 0.56;
+    --wp-veil-2: 0.68;
+    --wp-veil-3: 0.78;
+
+    --panel-opacity: 1;
+    /* 文字密集的区域（日志 / 空态 / 表格）：跟随滑块，但保底更实一些 */
+    --panel-opacity-soft: calc(var(--panel-opacity) + (1 - var(--panel-opacity)) * 0.55);
+  }
+
+  /* ---- 强调配色：仅覆盖品牌相关令牌，不影响中性灰阶 ---- */
+  [data-accent="blue"] {
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 221 83% 53%;
+    --brand: 221 83% 53%;
+    --brand-soft: 214 95% 93%;
+    --brand-ink: 221 70% 35%;
+  }
+  [data-accent="blue"].dark {
+    --primary: 217 91% 62%;
+    --primary-foreground: 222 47% 11%;
+    --ring: 217 91% 62%;
+    --brand: 217 91% 62%;
+    --brand-soft: 217 55% 18%;
+    --brand-ink: 213 94% 78%;
+  }
+  [data-accent="violet"] {
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 262 83% 58%;
+    --brand: 262 83% 58%;
+    --brand-soft: 269 100% 95%;
+    --brand-ink: 263 60% 40%;
+  }
+  [data-accent="violet"].dark {
+    --primary: 263 70% 65%;
+    --primary-foreground: 260 40% 10%;
+    --ring: 263 70% 65%;
+    --brand: 263 70% 65%;
+    --brand-soft: 263 45% 20%;
+    --brand-ink: 269 95% 82%;
+  }
+  [data-accent="emerald"] {
+    --primary: 160 84% 32%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 160 84% 32%;
+    --brand: 160 84% 32%;
+    --brand-soft: 152 76% 92%;
+    --brand-ink: 161 80% 24%;
+  }
+  [data-accent="emerald"].dark {
+    --primary: 158 64% 48%;
+    --primary-foreground: 160 50% 8%;
+    --ring: 158 64% 48%;
+    --brand: 158 64% 48%;
+    --brand-soft: 160 45% 16%;
+    --brand-ink: 156 70% 76%;
+  }
+  [data-accent="rose"] {
+    --primary: 346 77% 50%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 346 77% 50%;
+    --brand: 346 77% 50%;
+    --brand-soft: 351 100% 95%;
+    --brand-ink: 346 65% 38%;
+  }
+  [data-accent="rose"].dark {
+    --primary: 346 80% 62%;
+    --primary-foreground: 350 45% 9%;
+    --ring: 346 80% 62%;
+    --brand: 346 80% 62%;
+    --brand-soft: 346 45% 19%;
+    --brand-ink: 351 95% 82%;
+  }
+  [data-accent="amber"] {
+    --primary: 26 90% 45%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 26 90% 45%;
+    --brand: 26 90% 45%;
+    --brand-soft: 44 100% 92%;
+    --brand-ink: 26 75% 32%;
+  }
+  [data-accent="amber"].dark {
+    --primary: 38 92% 55%;
+    --primary-foreground: 26 60% 9%;
+    --ring: 38 92% 55%;
+    --brand: 38 92% 55%;
+    --brand-soft: 32 55% 17%;
+    --brand-ink: 44 95% 78%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    overflow: hidden;
+  }
+  ::selection {
+    background: hsl(var(--brand) / 0.25);
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.55);
+    background-clip: padding-box;
+  }
+}
+
+@layer components {
+  /*
+   * 功能面板底色。不透明度由「面板不透明度」控制，但保持一个下限，
+   * 保证正文和小字始终落在足够实的底上——只用 CSS 变量做颜色混合，
+   * 不用 backdrop-filter（QtWebEngine 软件合成下会持续重绘导致频闪）。
+   */
+  .panel-surface {
+    background-color: hsl(var(--card) / var(--panel-opacity));
+    border-color: hsl(var(--border) / 0.85);
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.06),
+      0 10px 26px -16px hsl(var(--shadow-color) / 0.22);
+  }
+  .panel-surface-soft {
+    background-color: hsl(var(--card) / var(--panel-opacity-soft));
+    border-color: hsl(var(--border) / 0.8);
+  }
+  /* 滑块：轨道用边框色，填充部分用当前强调色；两个主题下都有足够对比 */
+  .range-accent {
+    background: linear-gradient(
+      to right,
+      hsl(var(--primary)) 0%,
+      hsl(var(--primary)) var(--range-fill, 0%),
+      hsl(var(--input)) var(--range-fill, 0%),
+      hsl(var(--input)) 100%
+    );
+  }
+  .range-accent::-webkit-slider-thumb {
+    height: 0.875rem;
+    width: 0.875rem;
+    appearance: none;
+    border-radius: 999px;
+    border: 2px solid hsl(var(--card));
+    background: hsl(var(--primary));
+    box-shadow: 0 1px 3px hsl(var(--shadow-color) / 0.35);
+  }
+  .range-accent::-moz-range-thumb {
+    height: 0.875rem;
+    width: 0.875rem;
+    border-radius: 999px;
+    border: 2px solid hsl(var(--card));
+    background: hsl(var(--primary));
+    box-shadow: 0 1px 3px hsl(var(--shadow-color) / 0.35);
+  }
+
+  /* 占位符：比说明文字再浅一档，保持“未填写”的从属感 */
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground-soft));
+    opacity: 1;
+  }
+  .brand-soft {
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--brand-ink));
+  }
+  .brand-chip {
+    @apply inline-flex items-center rounded px-1.5 py-0.5 font-medium;
+    background: hsl(var(--brand) / 0.16);
+    color: hsl(var(--brand-ink));
+  }
+  .surface-shadow {
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.05),
+      0 8px 24px -12px hsl(var(--shadow-color) / 0.18);
+  }
+  .mono-path {
+    font-family: "Cascadia Code", Consolas, "Microsoft YaHei UI", monospace;
+    font-size: 11px;
+    letter-spacing: -0.01em;
+  }
+}

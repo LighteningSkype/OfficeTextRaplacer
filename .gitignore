@@ -1,0 +1,34 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# 前端：依赖与中间产物忽略；dist 必须随项目交付（运行期不依赖 Node）
+web/node_modules/
+web/.vite/
+web/tsconfig.tsbuildinfo
+_scratch/
+
+# 单文件打包产物/分析缓存不进源码仓库（发行时单独附 exe）
+build/
+dist/
+*.spec.bak
+*.log
+
+# 本机工作数据和图片，不上传至公开仓库
+.workbuddy/
+.box-agent/
+.box-agent-scratch/
+testdoc/
+微信图片_*.jpg
+OfficeTextReplacer-data/
+启动失败.txt
+.env
+.env.*
+*.pem
+*.key
