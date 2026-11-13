@@ -16,6 +16,7 @@ _scratch/
 
 # 单文件打包产物/分析缓存不进源码仓库（发行时单独附 exe）
 build/
+build-onedir/
 /dist/
 *.spec.bak
 *.log
