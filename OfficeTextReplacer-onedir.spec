@@ -63,6 +63,7 @@ exe = EXE(
     [],
     exclude_binaries=True,
     name="OfficeTextReplacer",
+    icon=str(ROOT / "packaging" / "app.ico"),
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

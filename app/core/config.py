@@ -13,13 +13,30 @@ APP_TITLE = "Office 文字替换器"
 APP_SUBTITLE = "基于 office-cli · 支持 Word / Excel / PowerPoint"
 
 
+def _is_writable(path: Path) -> bool:
+    """目录不存在时尝试创建，再用一次写探测判断是否真的可写。"""
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        probe = path / ".write-probe"
+        probe.write_text("", encoding="utf-8")
+        probe.unlink()
+        return True
+    except OSError:
+        return False
+
+
 def app_data_dir() -> Path:
-    """绿色版仅在 EXE 所在目录写配置/备份；源码运行仍沿用 LocalAppData。"""
+    """绿色版优先程序目录；安装到 Program Files 等不可写位置时回退 LocalAppData。"""
     if getattr(sys, "frozen", False):
-        path = Path(sys.executable).resolve().parent / "OfficeTextReplacer-data"
-    else:
+        portable = Path(sys.executable).resolve().parent / "OfficeTextReplacer-data"
+        if _is_writable(portable):
+            return portable
         base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
         path = Path(base) / APP_NAME
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+    base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
+    path = Path(base) / APP_NAME
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -138,10 +155,11 @@ class Settings:
                 setattr(settings, key, value)
         if not settings.backup_root:
             settings.backup_root = default_backup_root()
-        elif getattr(sys, "frozen", False):
-            # 旧目录迁移后，默认备份路径应跟着 EXE 所在位置走；手动自定义路径保留。
-            previous = Path(settings.backup_root)
-            if previous.name.lower() == "backups" and previous.parent.name.lower() == "officetextreplacer-data":
+        else:
+            # 绿色版与安装版互迁、或自定义目录被移走后，旧备份路径可能不可写；
+            # 此时回退到当前默认位置，避免每次替换都在写备份时失败。
+            root = Path(settings.backup_root)
+            if not _is_writable(root.parent):
                 settings.backup_root = default_backup_root()
         settings.wallpaper_panel_opacity = _clamp_int(
             settings.wallpaper_panel_opacity,

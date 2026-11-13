@@ -33,17 +33,25 @@
 
 ## 2. 快速开始
 
-### 绿色便携版（二选一）
+### 三种发布形态
 
-**A. 目录版 zip（推荐：离线机、受管控机器、磁盘紧张）**
+**A. 安装版（推荐给普通用户）**
+
+`dist/OfficeTextReplacer-2.0.0-win64-setup.exe`（约 151 MB）双击运行安装向导，可选「为所有人安装」或「仅为我安装」，默认装到 `{autopf}\OfficeTextReplacer`，生成开始菜单项与可选桌面快捷方式，并注册标准卸载项（控制面板/设置 → 应用）。
+
+- 安装目录不可写时（例如装进 `Program Files`），配置、壁纸与备份自动落到 `%LOCALAPPDATA%\OfficeTextReplacer\`；装在可写目录则仍写在程序目录。
+- 卸载会移除程序文件与安装目录；`%LOCALAPPDATA%` 下的用户配置与备份保留，需要时手动删除。
+- 安装包自带简体中文/英文向导界面，内置 Apache 2.0 许可证页。
+
+**B. 目录版 zip（推荐：离线机、受管控机器、磁盘紧张）**
 
 `dist/OfficeTextReplacer-2.0.0-win64-portable.zip`（约 221 MB）解压到任意可写目录，进入 `OfficeTextReplacer-2.0.0-win64/` 双击 `OfficeTextReplacer.exe`。运行时**不需要往 `%TEMP%` 解压**，启动快、不会出现单文件模式的内存/磁盘解压错误。整个目录可整体拷走或删除，配置写在程序目录的 `OfficeTextReplacer-data/`。
 
-**B. 单文件 exe**
+**C. 单文件 exe**
 
 `dist/OfficeTextReplacer-2.0.0-win64.exe`（约 225 MB）只需复制**一个文件**；内置 Python、QtWebEngine、前端静态资源和 office-cli 1.0.160，目标机器无需安装 Python、Node、Office 或 office-cli。程序不主动写注册表；首次运行在 **EXE 同级**创建 `OfficeTextReplacer-data/`，保存配置、壁纸和备份。单文件启动时会先把约 600 MB 运行资源解压到系统临时目录，退出后清理——因此对临时目录的**可写性与剩余空间**有要求（见下方排错）。
 
-> 请放在**可写目录**；若放在 Program Files 等只读目录，同级配置目录可能创建失败。备份可能含原始文档敏感内容，移动/分享时不要连同 `OfficeTextReplacer-data/` 一起发送。尚未做干净机器全功能回归，GitHub 源码仓库不会提交构建产物。
+> 便携版请放在**可写目录**；备份可能含原始文档敏感内容，移动/分享时不要连同 `OfficeTextReplacer-data/` 一起发送。尚未做干净机器全功能回归，GitHub 源码仓库不会提交构建产物。
 
 **单文件启动报 `Failed to extract ... decompression resulted in return code -3`？** 这是 PyInstaller 引导器无法把运行资源写入临时目录，常见于磁盘不足、`%TEMP%` 只读/被重定向、杀毒软件拦截。按顺序排查：
 
@@ -72,13 +80,16 @@ OfficeTextReplacer-2.0.0-win64.exe
 
 ```bash
 python -m pip install -r requirements.txt -r requirements-build.txt
+python packaging/make_icon.py                                             # 生成 packaging/app.ico
 npm --prefix web ci
 npm --prefix web run build
 python -m PyInstaller --noconfirm --clean OfficeTextReplacer.spec          # 单文件
-python -m PyInstaller --noconfirm OfficeTextReplacer-onedir.spec          # 目录版
+python -m PyInstaller --noconfirm --distpath dist-out OfficeTextReplacer-onedir.spec   # 目录版
+7z a -tzip -mx=5 dist/OfficeTextReplacer-2.0.0-win64-portable.zip dist-out/OfficeTextReplacer-2.0.0-win64
+ISCC.exe packaging\installer.iss                                          # 安装版（需 Inno Setup 7）
 ```
 
-目录版输出在 `dist/OfficeTextReplacer-2.0.0-win64/`，可用 `7z a -tzip -mx=5 <zip> <目录>` 打包。构建机必须可定位 `officecli.exe`（或设置 `OFFICECLI_BIN` 指向其绝对路径）。最终运行时不依赖构建机路径。
+目录版输出在 `dist-out/OfficeTextReplacer-2.0.0-win64/`，安装版输出在 `dist/OfficeTextReplacer-2.0.0-win64-setup.exe`。构建机必须可定位 `officecli.exe`（或设置 `OFFICECLI_BIN` 指向其绝对路径），安装版还需本机安装 [Inno Setup 7](https://jrsoftware.org/isdl.php)。最终运行时不依赖构建机路径。
 
 ### 源码运行环境要求
 
@@ -270,7 +281,15 @@ Office-replace/
 ├── OfficeTextReplacer.spec    # PyInstaller 单文件构建配置
 ├── OfficeTextReplacer-onedir.spec  # PyInstaller 目录版构建配置
 ├── requirements-build.txt     # 构建依赖清单
-├── dist/OfficeTextReplacer.exe # 构建产物（不提交到源码仓库）
+├── packaging/
+│   ├── installer.iss          # Inno Setup 安装包脚本（中文/英文向导）
+│   ├── make_icon.py           # 生成多尺寸 app.ico
+│   └── app.ico
+├── dist/                      # 构建产物（不提交到源码仓库）
+│   ├── OfficeTextReplacer-2.0.0-win64.exe           # 单文件
+│   ├── OfficeTextReplacer-2.0.0-win64-portable.zip  # 目录版
+│   ├── OfficeTextReplacer-2.0.0-win64-setup.exe     # 安装版
+│   └── SHA256SUMS.txt
 ├── requirements.txt
 ├── app/
 │   ├── web_main.py            # QtWebEngine 宿主窗口、原生能力桥、拖放注入

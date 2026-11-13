@@ -18,6 +18,7 @@ _scratch/
 build/
 build-onedir/
 /dist/
+dist-out/
 *.spec.bak
 *.log
 
